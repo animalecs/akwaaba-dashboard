@@ -4,7 +4,10 @@ import { Modal } from '../../components/Modal'
 import { ArrowUpRight, DollarSign, ImageIcon, Package, ShieldCheck } from 'lucide-react'
 
 function formatMoney(value) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
+    return `₵${new Intl.NumberFormat('en-GH', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(value ?? 0)}`
 }
 
 export function ProductDetailModal({ product, open, onClose, premiumAccess, onUpgrade }) {

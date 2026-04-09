@@ -7,9 +7,9 @@ export function LockBadge({ label = 'Premium only', onClick, className = '' }) {
         <Component
             type={onClick ? 'button' : undefined}
             onClick={onClick}
-            className={`inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 transition ${onClick ? 'hover:bg-slate-200' : ''} ${className}`}
+            className={`inline-flex items-center gap-2 rounded-full border border-slate-700/20 bg-slate-900 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-white shadow-sm transition ${onClick ? 'hover:bg-slate-800' : ''} ${className}`}
         >
-            <Lock size={14} />
+            <Lock size={14} className="text-sky-200" />
             {label}
         </Component>
     )

@@ -9,7 +9,7 @@ export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Premium Plan</p>
-                            <h2 className="mt-3 text-5xl font-bold">€49<span className="text-2xl text-slate-300">/mo</span></h2>
+                            <h2 className="mt-3 text-5xl font-bold">₵49<span className="text-2xl text-slate-300">/mo</span></h2>
                             <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">
                                 Unlock the commercial fields that matter when you are actively evaluating the Ghana market.
                             </p>
@@ -68,7 +68,7 @@ export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage
                             <span className="text-base font-semibold">Pay</span>
                             <span className="rounded-full bg-white/14 px-2 py-0.5 text-xs font-medium text-white/88">Powered by Stripe</span>
                         </span>
-                        <span className="text-sm font-medium">{loading ? 'Sending…' : '€49/month'}</span>
+                        <span className="text-sm font-medium">{loading ? 'Sending…' : '₵49/month'}</span>
                     </button>
                 )}
             </div>

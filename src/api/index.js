@@ -105,7 +105,7 @@ export async function getProducts(params = {}) {
         retailPrice: product.avg_r_p || 0,
         lastUpdate: product.last_update,
         country: product.country,
-        countryEmoji: countryToEmoji(product.country),
+        countryEmoji: product.country,
         image: '',
     }))
 }
