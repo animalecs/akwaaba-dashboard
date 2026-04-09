@@ -28,6 +28,7 @@ export function AuthPage() {
     const [companyType, setCompanyType] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const [signupSuccessEmail, setSignupSuccessEmail] = useState('')
 
     const passwordValid = password.length >= 8
     const passwordsMatch = password === confirmPassword && password.length > 0
@@ -59,6 +60,7 @@ export function AuthPage() {
         try {
             if (mode === 'signin') {
                 await signIn({ email, password })
+                navigate('/dashboard', { replace: true })
             } else {
                 await signUp({
                     email,
@@ -70,8 +72,8 @@ export function AuthPage() {
                         company_type: companyType,
                     },
                 })
+                setSignupSuccessEmail(email)
             }
-            navigate('/dashboard', { replace: true })
         } catch (err) {
             setError(err.message || 'Unable to authenticate')
         } finally {
@@ -90,7 +92,7 @@ export function AuthPage() {
                         </div>
                         <div>
                             <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Welcome back to Akwaaba</h1>
-                            <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Sign in or register to manage product entitlements and billing from your dashboard.</p>
+                            <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">Sign in or register to access the portal.</p>
                         </div>
                     </div>
 
@@ -111,72 +113,89 @@ export function AuthPage() {
                         </button>
                     </div>
 
-                    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                        <div className="space-y-4">
-                            {mode === 'signup' && (
-                                <div className="grid gap-4 sm:grid-cols-2">
-                                    <Input label="First name" type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} required placeholder="Jane" />
-                                    <Input label="Last name" type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} required placeholder="Doe" />
+                    {signupSuccessEmail ? (
+                        <div className="mt-8 rounded-[2rem] border border-emerald-200 bg-emerald-50 p-6">
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+                                    <Check size={18} />
                                 </div>
-                            )}
-                            {mode === 'signup' && (
-                                <Input label="Company name" type="text" value={companyName} onChange={(event) => setCompanyName(event.target.value)} required placeholder="Akwaaba Ltd" />
-                            )}
-                            {mode === 'signup' && (
-                                <label className="block w-full text-sm text-slate-600">
-                                    <span className="mb-2 block font-medium text-slate-900">Company type</span>
-                                    <select
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
-                                        value={companyType}
-                                        onChange={(event) => setCompanyType(event.target.value)}
-                                        required
-                                    >
-                                        <option value="">Select one</option>
-                                        {companyTypeOptions.map((option) => (
-                                            <option key={option} value={option}>{option}</option>
-                                        ))}
-                                    </select>
-                                </label>
-                            )}
-                            <Input label="Work email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required placeholder="jane@company.com" />
-                            <div className="relative">
-                                <Input label="Password " type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="Enter a secure password" />
-                                {mode === 'signup' && password && (
-                                    <div className="absolute right-4 top-10 flex items-center">
-                                        {passwordValid ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900">Registration successful</h3>
+                                    <p className="mt-2 text-sm leading-6 text-slate-700">
+                                        Check your email to confirm the email address you used.
+                                    </p>
+                                    <p className="mt-2 text-sm font-medium text-emerald-700">{signupSuccessEmail}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                            <div className="space-y-4">
+                                {mode === 'signup' && (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        <Input label="First name" type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} required placeholder="Jane" />
+                                        <Input label="Last name" type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} required placeholder="Doe" />
                                     </div>
                                 )}
-                                {mode === 'signup' && !passwordValid && password && (
-                                    <p className="mt-2 text-xs text-rose-600">Password must be at least 8 characters</p>
+                                {mode === 'signup' && (
+                                    <Input label="Company name" type="text" value={companyName} onChange={(event) => setCompanyName(event.target.value)} required placeholder="Acme Ltd" />
                                 )}
-                            </div>
-                            {mode === 'signup' && (
+                                {mode === 'signup' && (
+                                    <label className="block w-full text-sm text-slate-600">
+                                        <span className="mb-2 block font-medium text-slate-900">Company type</span>
+                                        <select
+                                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                            value={companyType}
+                                            onChange={(event) => setCompanyType(event.target.value)}
+                                            required
+                                        >
+                                            <option value="">Select one</option>
+                                            {companyTypeOptions.map((option) => (
+                                                <option key={option} value={option}>{option}</option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                )}
+                                <Input label="Work email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required placeholder="jane@company.com" />
                                 <div className="relative">
-                                    <Input label="Confirm password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required placeholder="Confirm your password" />
-                                    {confirmPassword && (
+                                    <Input label="Password " type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="Enter a secure password" />
+                                    {mode === 'signup' && password && (
                                         <div className="absolute right-4 top-10 flex items-center">
-                                            {passwordsMatch ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
+                                            {passwordValid ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
                                         </div>
                                     )}
-                                    {confirmPassword && !passwordsMatch && (
-                                        <p className="mt-2 text-xs text-rose-600">Passwords must match</p>
+                                    {mode === 'signup' && !passwordValid && password && (
+                                        <p className="mt-2 text-xs text-rose-600">Password must be at least 8 characters</p>
                                     )}
                                 </div>
-                            )}
-                            {mode === 'signup' && (
-                                <p className="text-xs text-slate-600">• Password must be at least 8 characters • Company details are required</p>
-                            )}
-                        </div>
-                        {error && <div className="rounded-3xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <Button type="submit" variant="primary" className="w-full sm:w-auto" disabled={loading}>
-                                {loading ? 'Processing…' : mode === 'signin' ? 'Sign in' : 'Create account'}
-                            </Button>
-                            <button type="button" className="text-sm font-medium text-slate-600 transition hover:text-slate-900">
-                                Forgot password?
-                            </button>
-                        </div>
-                    </form>
+                                {mode === 'signup' && (
+                                    <div className="relative">
+                                        <Input label="Confirm password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required placeholder="Confirm your password" />
+                                        {confirmPassword && (
+                                            <div className="absolute right-4 top-10 flex items-center">
+                                                {passwordsMatch ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
+                                            </div>
+                                        )}
+                                        {confirmPassword && !passwordsMatch && (
+                                            <p className="mt-2 text-xs text-rose-600">Passwords must match</p>
+                                        )}
+                                    </div>
+                                )}
+                                {mode === 'signup' && (
+                                    <p className="text-xs text-slate-600">• Password must be at least 8 characters • Company details are required</p>
+                                )}
+                            </div>
+                            {error && <div className="rounded-3xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <Button type="submit" variant="primary" className="w-full sm:w-auto" disabled={loading}>
+                                    {loading ? 'Processing…' : mode === 'signin' ? 'Sign in' : 'Create account'}
+                                </Button>
+                                <button type="button" className="text-sm font-medium text-slate-600 transition hover:text-slate-900">
+                                    Forgot password?
+                                </button>
+                            </div>
+                        </form>
+                    )}
 
                 </div>
 
@@ -189,7 +208,7 @@ export function AuthPage() {
                             <p className="text-sm uppercase tracking-[0.22em] text-slate-400"></p>
                             <h2 className="mt-3 text-3xl font-semibold text-white">Akwaaba Ltd</h2>
                         </div>
-                        <p className="text-sm leading-6 text-slate-300">A premium product dashboard built for procurement teams and commercial operators.</p>
+                        <p className="text-sm leading-6 text-slate-300">Your digital window to the market.</p>
                         {/* <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-left text-sm text-slate-300">
                             <p className="font-semibold text-white">Login notes</p>
                             <p className="mt-2">Register with your company details to access entitlement-aware product data and billing controls.</p>

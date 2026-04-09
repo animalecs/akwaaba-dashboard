@@ -3,6 +3,7 @@ import { AuthProvider } from './hooks/useAuth'
 import { DashboardPage } from './features/dashboard/DashboardPage'
 import { BillingPage } from './features/billing/BillingPage'
 import { AuthPage } from './features/auth/AuthPage'
+import { AuthCallbackPage } from './features/auth/AuthCallbackPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
         <AuthProvider>
             <Routes>
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/auth/callback" element={<AuthCallbackPage />} />
                 <Route
                     path="/dashboard"
                     element={
