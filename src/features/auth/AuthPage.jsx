@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
-import { ShieldCheck, ArrowRight, Check, X } from 'lucide-react'
+import { ShieldCheck, Check, X, Eye, EyeOff } from 'lucide-react'
 import sankofaLogo from '../../images/sankofa.svg'
 
 const companyTypeOptions = [
@@ -29,6 +29,8 @@ export function AuthPage() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [signupSuccessEmail, setSignupSuccessEmail] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const passwordValid = password.length >= 8
     const passwordsMatch = password === confirmPassword && password.length > 0
@@ -100,14 +102,20 @@ export function AuthPage() {
                         <button
                             type="button"
                             className={`flex-1 rounded-3xl px-4 py-3 ${mode === 'signin' ? 'bg-white text-slate-900 shadow-sm' : 'opacity-80 hover:bg-slate-100'}`}
-                            onClick={() => setMode('signin')}
+                            onClick={() => {
+                                setSignupSuccessEmail('')
+                                setMode('signin')
+                            }}
                         >
                             Sign in
                         </button>
                         <button
                             type="button"
                             className={`flex-1 rounded-3xl px-4 py-3 ${mode === 'signup' ? 'bg-white text-slate-900 shadow-sm' : 'opacity-80 hover:bg-slate-100'}`}
-                            onClick={() => setMode('signup')}
+                            onClick={() => {
+                                setSignupSuccessEmail('')
+                                setMode('signup')
+                            }}
                         >
                             Register
                         </button>
@@ -158,7 +166,15 @@ export function AuthPage() {
                                 )}
                                 <Input label="Work email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required placeholder="jane@company.com" />
                                 <div className="relative">
-                                    <Input label="Password " type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="Enter a secure password" />
+                                    <Input label="Password " type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="Enter a secure password" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword((current) => !current)}
+                                        className="absolute right-10 top-10 flex items-center text-slate-400 transition hover:text-slate-700"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
                                     {mode === 'signup' && password && (
                                         <div className="absolute right-4 top-10 flex items-center">
                                             {passwordValid ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
@@ -170,7 +186,15 @@ export function AuthPage() {
                                 </div>
                                 {mode === 'signup' && (
                                     <div className="relative">
-                                        <Input label="Confirm password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required placeholder="Confirm your password" />
+                                        <Input label="Confirm password" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required placeholder="Confirm your password" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword((current) => !current)}
+                                            className="absolute right-10 top-10 flex items-center text-slate-400 transition hover:text-slate-700"
+                                            aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                         {confirmPassword && (
                                             <div className="absolute right-4 top-10 flex items-center">
                                                 {passwordsMatch ? <Check size={16} className="text-emerald-600" /> : <X size={16} className="text-rose-600" />}
@@ -186,13 +210,10 @@ export function AuthPage() {
                                 )}
                             </div>
                             {error && <div className="rounded-3xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <Button type="submit" variant="primary" className="w-full sm:w-auto" disabled={loading}>
                                     {loading ? 'Processing…' : mode === 'signin' ? 'Sign in' : 'Create account'}
                                 </Button>
-                                <button type="button" className="text-sm font-medium text-slate-600 transition hover:text-slate-900">
-                                    Forgot password?
-                                </button>
                             </div>
                         </form>
                     )}
