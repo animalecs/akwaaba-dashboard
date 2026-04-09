@@ -53,6 +53,37 @@ create table public.user_entitlements (
 create index user_entitlements_user_id_idx on user_entitlements(user_id);
 ```
 
+### 3. Premium Interest Table
+
+Use this to record users who clicked pay and want to be notified when premium is ready:
+
+```sql
+create table public.premium_interest (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  email text,
+  company_name text,
+  company_type text,
+  status text not null default 'ready_to_pay',
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone not null default now(),
+  unique(user_id)
+);
+
+alter table public.premium_interest enable row level security;
+
+create policy "Users can insert their own premium interest"
+  on public.premium_interest for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "Users can update their own premium interest"
+  on public.premium_interest for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+```
+
 **Note:** Currently, premium access is determined by the `premium_access` field in user metadata set during signup.
 
 ## Frontend API Functions

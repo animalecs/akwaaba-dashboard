@@ -21,6 +21,7 @@ export async function signUp({ email, password, metadata = {} }) {
                 first_name: metadata.first_name,
                 last_name: metadata.last_name,
                 company_name: metadata.company_name,
+                company_type: metadata.company_type,
             },
         },
     })
@@ -46,6 +47,14 @@ export async function getEntitlements() {
         premiumAccess: isPremium,
         nextBilling: null,
     }
+}
+
+// Map country codes to flag emoji
+function countryToEmoji(countryCode) {
+    if (!countryCode) return '🌍'
+    const code = countryCode.toUpperCase()
+    const codePoints = [...code].map(char => 127397 + char.charCodeAt())
+    return String.fromCodePoint(...codePoints)
 }
 
 export async function getProducts(params = {}) {
@@ -85,32 +94,49 @@ export async function getProducts(params = {}) {
     // Map database schema to frontend expected format
     return data.map((product) => ({
         id: product.id,
-        name: product.brand && product.category ? `${product.brand} ${product.category}` : product.description.substring(0, 50),
+        name: product.description?.trim() || [product.brand, product.category].filter(Boolean).join(' ') || 'Unnamed product',
         category: product.category,
         brand: product.brand,
-        shortDescription: product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description,
+        shortDescription: product.category || '',
         description: product.description,
         registered: product.registration_status === 1,
         availability: product.availability === 1 ? 'In stock' : product.availability === 2 ? 'Limited' : 'Out of stock',
         wholesalePrice: product.avg_w_p || 0,
         retailPrice: product.avg_r_p || 0,
         lastUpdate: product.last_update,
-        image: '', // No image field in schema
+        country: product.country,
+        countryEmoji: countryToEmoji(product.country),
+        image: '',
     }))
 }
 
-export async function createCheckoutSession() {
-    try {
-        const response = await fetch('/billing/checkout-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        if (!response.ok) {
-            throw new Error('Billing checkout not configured')
-        }
-        return response.json()
-    } catch (error) {
-        return { url: null, error: error.message }
+export async function registerPremiumInterest() {
+    const { data: authData, error: userError } = await supabase.auth.getUser()
+    if (userError || !authData?.user) {
+        throw new Error('User not authenticated')
+    }
+
+    const user = authData.user
+    const payload = {
+        user_id: user.id,
+        email: user.email,
+        company_name: user.user_metadata?.company_name ?? null,
+        company_type: user.user_metadata?.company_type ?? null,
+        status: 'ready_to_pay',
+        updated_at: new Date().toISOString(),
+    }
+
+    const { error } = await supabase.from('premium_interest').upsert(payload, {
+        onConflict: 'user_id',
+    })
+
+    if (error) {
+        throw error
+    }
+
+    return {
+        success: true,
+        message: 'Thank you, we will notify when the paid version is available',
     }
 }
 

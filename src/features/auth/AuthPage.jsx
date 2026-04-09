@@ -6,6 +6,15 @@ import { Input } from '../../components/Input'
 import { ShieldCheck, ArrowRight, Check, X } from 'lucide-react'
 import sankofaLogo from '../../images/sankofa.svg'
 
+const companyTypeOptions = [
+    'Brand owner',
+    'Manufacturer',
+    'Distributor',
+    'Retailer',
+    'Procurement team',
+    'Other',
+]
+
 export function AuthPage() {
     const { user, signIn, signUp } = useAuth()
     const navigate = useNavigate()
@@ -15,12 +24,15 @@ export function AuthPage() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [companyName, setCompanyName] = useState('Akwaaba Ltd')
+    const [companyName, setCompanyName] = useState('')
+    const [companyType, setCompanyType] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
     const passwordValid = password.length >= 8
     const passwordsMatch = password === confirmPassword && password.length > 0
+    const companyNameValid = companyName.trim().length >= 2 && /[a-z0-9]/i.test(companyName)
+    const companyTypeValid = companyType.trim().length > 0
 
     useEffect(() => {
         if (user) {
@@ -35,6 +47,14 @@ export function AuthPage() {
             setError('Password must be at least 8 characters and match confirmation.')
             return
         }
+        if (mode === 'signup' && !companyNameValid) {
+            setError('Enter a valid company name.')
+            return
+        }
+        if (mode === 'signup' && !companyTypeValid) {
+            setError('Select the type of company you work for.')
+            return
+        }
         setLoading(true)
         try {
             if (mode === 'signin') {
@@ -46,7 +66,8 @@ export function AuthPage() {
                     metadata: {
                         first_name: firstName,
                         last_name: lastName,
-                        company_name: companyName,
+                        company_name: companyName.trim(),
+                        company_type: companyType,
                     },
                 })
             }
@@ -101,6 +122,22 @@ export function AuthPage() {
                             {mode === 'signup' && (
                                 <Input label="Company name" type="text" value={companyName} onChange={(event) => setCompanyName(event.target.value)} required placeholder="Akwaaba Ltd" />
                             )}
+                            {mode === 'signup' && (
+                                <label className="block w-full text-sm text-slate-600">
+                                    <span className="mb-2 block font-medium text-slate-900">Company type</span>
+                                    <select
+                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                                        value={companyType}
+                                        onChange={(event) => setCompanyType(event.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select one</option>
+                                        {companyTypeOptions.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
                             <Input label="Work email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required placeholder="jane@company.com" />
                             <div className="relative">
                                 <Input label="Password " type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="Enter a secure password" />
@@ -127,7 +164,7 @@ export function AuthPage() {
                                 </div>
                             )}
                             {mode === 'signup' && (
-                                <p className="text-xs text-slate-600">• Password must be at least 8 characters • Must match confirmation</p>
+                                <p className="text-xs text-slate-600">• Password must be at least 8 characters • Company details are required</p>
                             )}
                         </div>
                         {error && <div className="rounded-3xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}

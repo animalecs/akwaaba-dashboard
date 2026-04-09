@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
 
-export function Modal({ open, onClose, title, description, children }) {
+export function Modal({ open, onClose, title, description, header, children }) {
     return (
         <Transition appear show={open} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -31,9 +31,15 @@ export function Modal({ open, onClose, title, description, children }) {
                         >
                             <Dialog.Panel className="w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
                                 <div className="mb-4 flex items-start justify-between gap-4">
-                                    <div>
-                                        <Dialog.Title className="text-xl font-semibold text-slate-900">{title}</Dialog.Title>
-                                        {description && <p className="mt-2 text-sm text-slate-600">{description}</p>}
+                                    <div className="min-w-0 flex-1">
+                                        {header ? (
+                                            header
+                                        ) : (
+                                            <>
+                                                <Dialog.Title className="text-xl font-semibold text-slate-900">{title}</Dialog.Title>
+                                                {description && <p className="mt-2 text-sm text-slate-600">{description}</p>}
+                                            </>
+                                        )}
                                     </div>
                                     <button className="rounded-2xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onClick={onClose}>
                                         <X size={20} />

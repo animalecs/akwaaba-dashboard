@@ -1,17 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createCheckoutSession, createCustomerPortalSession } from '../api/index'
+import { createCustomerPortalSession, registerPremiumInterest } from '../api/index'
 
-export function useCheckoutSession() {
+export function usePremiumInterest() {
     const queryClient = useQueryClient()
-    return useMutation(createCheckoutSession, {
-        onSuccess: (data) => {
-            if (data.url) {
-                window.location.href = data.url
-            }
+    return useMutation(registerPremiumInterest, {
+        onSuccess: () => {
             queryClient.invalidateQueries(['entitlement'], { exact: true })
         },
     })
 }
+
+export const useCheckoutSession = usePremiumInterest
 
 export function useCustomerPortal() {
     return useMutation(createCustomerPortalSession, {
