@@ -121,7 +121,7 @@ export function DashboardPage() {
             <footer className="border-t border-slate-200 bg-white px-4 py-5 sm:px-6">
                 <div className="mx-auto flex max-w-6xl flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
                     <p className="font-medium text-slate-900">Akwaaba Ltd</p>
-                    <p>For feedbacks, bugs or suggestions write at <a href="mailto:info@akwaabaltd.com" className="text-blue-500 hover:underline">info@akwaabaltd.com</a></p>
+                    <p>For feedbacks, bugs or suggestions write at <a href="mailto:amina@akwaabaltd.com" className="text-blue-500 hover:underline">amina@akwaabaltd.com</a></p>
                 </div>
             </footer>
         </div>
