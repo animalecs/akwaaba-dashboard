@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { useEntitlement } from '../../hooks/useEntitlement'
 import { useProducts } from '../../hooks/useProducts'
-import { usePremiumInterest } from '../../hooks/useBilling'
+import { usePremiumUpgrade } from '../../hooks/useBilling'
 import { ProductTable } from '../products/ProductTable'
 import { ProductDetailModal } from '../products/ProductDetailModal'
 import { UpgradeModal } from './UpgradeModal'
@@ -15,7 +15,7 @@ export function DashboardPage() {
     const { user, signOut } = useAuth()
     const { data: entitlement, isLoading: entitlementLoading } = useEntitlement()
     const { data: products = [], isLoading: productsLoading, refetch } = useProducts()
-    const premiumInterest = usePremiumInterest()
+    const premiumUpgrade = usePremiumUpgrade()
     const [selected, setSelected] = useState(null)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [showUserMenu, setShowUserMenu] = useState(false)
@@ -23,11 +23,15 @@ export function DashboardPage() {
     const premiumAccess = entitlement?.premiumAccess === true
 
     const handleUpgrade = async () => {
-        await premiumInterest.mutateAsync()
+        try {
+            await premiumUpgrade.mutateAsync()
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const openUpgradeModal = () => {
-        premiumInterest.reset()
+        premiumUpgrade.reset()
         setShowUpgradeModal(true)
     }
 
@@ -105,13 +109,21 @@ export function DashboardPage() {
             <UpgradeModal
                 open={showUpgradeModal}
                 onClose={() => {
-                    premiumInterest.reset()
+                    premiumUpgrade.reset()
                     setShowUpgradeModal(false)
                 }}
                 onUpgrade={handleUpgrade}
-                loading={premiumInterest.isLoading}
-                successMessage={premiumInterest.data?.message}
+                loading={premiumUpgrade.isLoading}
+                successMessage={premiumUpgrade.data?.message}
+                errorMessage={premiumUpgrade.error?.message}
             />
+
+            <footer className="border-t border-slate-200 bg-white px-4 py-5 sm:px-6">
+                <div className="mx-auto flex max-w-6xl flex-col gap-2 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="font-medium text-slate-900">Akwaaba Ltd</p>
+                    <p>For feedbacks, bugs or suggestions write at <a href="mailto:info@akwaabaltd.com" className="text-blue-500 hover:underline">info@akwaabaltd.com</a></p>
+                </div>
+            </footer>
         </div>
     )
 }

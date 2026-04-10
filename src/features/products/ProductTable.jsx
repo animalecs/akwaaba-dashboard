@@ -248,14 +248,12 @@ export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
             },
             {
                 name: 'Brand',
-                width: isMobile ? '120px' : '140px',
                 sortable: true,
                 selector: (product) => product.brand ?? '',
                 cell: (product) => <span className="text-sm font-medium text-slate-700">{product.brand || 'Unknown'}</span>,
             },
             {
                 name: 'Retail Price',
-                width: isMobile ? '122px' : '148px',
                 sortable: true,
                 sortFunction: (a, b) => a.retailPrice - b.retailPrice,
                 cell: (product) => (
@@ -266,7 +264,6 @@ export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
             },
             {
                 name: '',
-                width: isMobile ? '98px' : '110px',
                 ignoreRowClick: true,
                 allowOverflow: true,
                 button: true,
@@ -396,7 +393,7 @@ export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
                         <span className="font-medium text-slate-700">Filtered list</span>
                         <span>· {filteredProducts.length} products</span>
                     </div>
-                    <p className="text-xs text-slate-500">Tap a row or use View to open product details.</p>
+                    {/* <p className="text-xs text-slate-500">Tap a row or use View to open product details.</p> */}
                 </div>
 
                 <div className="overflow-hidden rounded-[1.5rem]">

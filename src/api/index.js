@@ -40,12 +40,20 @@ export async function getEntitlements() {
         throw new Error('User not authenticated')
     }
 
-    // Since user_entitlements table doesn't exist, use user metadata
-    const isPremium = user.user.user_metadata?.premium_access === true
+    const { data: entitlement } = await supabase
+        .from('user_entitlements')
+        .select('plan, can_view_prices, can_view_availability, next_billing_date')
+        .eq('user_id', user.user.id)
+        .maybeSingle()
+
+    const isPremium = entitlement
+        ? entitlement.plan === 'premium' || entitlement.can_view_prices === true || entitlement.can_view_availability === true
+        : false
+
     return {
-        plan: isPremium ? 'premium' : 'free',
+        plan: entitlement?.plan || (isPremium ? 'premium' : 'free'),
         premiumAccess: isPremium,
-        nextBilling: null,
+        nextBilling: entitlement?.next_billing_date || null,
     }
 }
 
@@ -110,33 +118,34 @@ export async function getProducts(params = {}) {
     }))
 }
 
-export async function registerPremiumInterest() {
+export async function upgradeToPaidPlan() {
     const { data: authData, error: userError } = await supabase.auth.getUser()
     if (userError || !authData?.user) {
         throw new Error('User not authenticated')
     }
 
     const user = authData.user
-    const payload = {
-        user_id: user.id,
-        email: user.email,
-        company_name: user.user_metadata?.company_name ?? null,
-        company_type: user.user_metadata?.company_type ?? null,
-        status: 'ready_to_pay',
-        updated_at: new Date().toISOString(),
-    }
+    const now = new Date().toISOString()
+    const { data, error } = await supabase
+        .from('user_entitlements')
+        .update({
+            plan: 'paid',
+            can_view_prices: true,
+            can_view_availability: true,
+            updated_at: now,
+        })
+        .eq('user_id', user.id)
+        .select('user_id')
+        .maybeSingle()
 
-    const { error } = await supabase.from('premium_interest').upsert(payload, {
-        onConflict: 'user_id',
-    })
-
-    if (error) {
-        throw error
+    if (error) throw error
+    if (!data) {
+        throw new Error('No entitlement row found for this user.')
     }
 
     return {
         success: true,
-        message: 'Thank you, we will notify when the paid version is available',
+        message: 'Our beta access is full. You have been added to the waiting list, thank you for your patience!',
     }
 }
 

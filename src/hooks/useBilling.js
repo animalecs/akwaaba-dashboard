@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createCustomerPortalSession, registerPremiumInterest } from '../api/index'
+import { createCustomerPortalSession, upgradeToPaidPlan } from '../api/index'
 
-export function usePremiumInterest() {
+export function usePremiumUpgrade() {
     const queryClient = useQueryClient()
-    return useMutation(registerPremiumInterest, {
+    return useMutation(upgradeToPaidPlan, {
         onSuccess: () => {
             queryClient.invalidateQueries(['entitlement'], { exact: true })
+            queryClient.invalidateQueries(['products'])
         },
     })
 }
 
-export const useCheckoutSession = usePremiumInterest
+export const useCheckoutSession = usePremiumUpgrade
 
 export function useCustomerPortal() {
     return useMutation(createCustomerPortalSession, {

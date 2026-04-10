@@ -43,6 +43,8 @@ create table public.user_entitlements (
   user_id uuid not null references auth.users(id) on delete cascade,
   plan text default 'free',
   premium_access boolean default false,
+  can_view_prices boolean default false,
+  can_view_availability boolean default false,
   next_billing_date timestamp with time zone,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),

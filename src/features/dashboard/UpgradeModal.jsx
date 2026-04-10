@@ -1,76 +1,137 @@
 import { Modal } from '../../components/Modal'
-import { Check, FileCheck2, PackageSearch, Sparkles } from 'lucide-react'
+import { ArrowRight, Check, Lock, ScanSearch, Sparkles } from 'lucide-react'
 
-export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage }) {
+export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage, errorMessage }) {
     return (
         <Modal open={open} onClose={onClose} title="" description="">
-            <div className="space-y-6">
-                <div className="overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_top,#dbeafe_0%,transparent_30%),linear-gradient(135deg,#0f172a_0%,#1e293b_55%,#334155_100%)] p-6 text-white">
-                    <div className="flex items-start justify-between gap-4">
-                        <div>
-                            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Premium Plan</p>
-                            <h2 className="mt-3 text-5xl font-bold">₵49<span className="text-2xl text-slate-300">/mo</span></h2>
-                            <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">
-                                Unlock the commercial fields that matter when you are actively evaluating the Ghana market.
+            <div className="relative space-y-6">
+                <div className="pointer-events-none absolute left-1/2 top-16 hidden h-px w-16 -translate-x-1/2 border-t-2 border-dashed border-slate-300 lg:block" />
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                    <section className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xl font-semibold text-white">
+                                1
+                            </div>
+                            <div className="min-w-0">
+                                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-[2.25rem]">
+                                    Join the paid beta
+                                </h2>
+                                <p className="mt-4 text-base leading-8 text-slate-700 sm:text-lg">
+                                    Pretotype the upgrade flow and reserve premium access to live Ghana market data collected by our local team.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
+                            <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-4 py-4">
+                                <span className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Monthly</span>
+                                <span className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">+ VAT</span>
+                                <span className="rounded-2xl bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">Beta access</span>
+                            </div>
+
+                            <div className="space-y-4 px-4 py-5">
+                                <div className="flex items-center justify-between rounded-[1.25rem] bg-white px-4 py-4 shadow-sm ring-1 ring-slate-200/80">
+                                    <span className="text-sm font-medium text-slate-500">Plan</span>
+                                    <span className="text-lg font-semibold text-slate-900">Paid</span>
+                                </div>
+                                <div className="flex items-center justify-between rounded-[1.25rem] bg-white px-4 py-4 shadow-sm ring-1 ring-slate-200/80">
+                                    <span className="text-sm font-medium text-slate-500">Access</span>
+                                    <span className="text-lg font-semibold text-slate-900">Prices + availability</span>
+                                </div>
+                                <div className="flex items-end justify-between px-1 pt-2">
+                                    <span className="text-base text-slate-500">Total due</span>
+                                    <span className="text-[2.5rem] font-semibold tracking-[-0.04em] text-slate-900">€49</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {!successMessage && (
+                            <button
+                                type="button"
+                                onClick={onUpgrade}
+                                disabled={loading}
+                                className="mt-5 flex w-full items-center justify-between rounded-2xl bg-[#635bff] px-4 py-3.5 text-left text-white shadow-[0_18px_40px_rgba(99,91,255,0.32)] transition hover:bg-[#564ee8] disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                                <span className="flex items-center gap-3">
+                                    <span className="text-base font-semibold">{loading ? 'Sending…' : 'Pay'}</span>
+                                    <span className="rounded-full bg-white/14 px-2 py-0.5 text-xs font-medium text-white/88">Powered by Stripe</span>
+                                </span>
+                                <span className="text-sm font-medium">{loading ? 'Please wait' : '€49/month'}</span>
+                            </button>
+                        )}
+                    </section>
+
+                    <section className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.06)] sm:p-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xl font-semibold text-white">
+                                2
+                            </div>
+                            <div className="min-w-0">
+                                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-[2.25rem]">
+                                    Unlock the intelligence layer
+                                </h2>
+                                <p className="mt-4 text-base leading-8 text-slate-700 sm:text-lg">
+                                    The paid view opens the commercial fields that matter most when you assess the Ghana opportunity.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                            <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    <div className="rounded-[1rem] bg-white p-4 shadow-sm ring-1 ring-slate-200/80">
+                                        <div className="flex items-center gap-3 text-slate-900">
+                                            <ScanSearch size={18} />
+                                            <span className="text-sm font-semibold">Verified market checks</span>
+                                        </div>
+                                        <p className="mt-3 text-sm leading-6 text-slate-600">
+                                            Track retail pricing and verified shelf presence collected on the ground.
+                                        </p>
+                                    </div>
+                                    <div className="rounded-[1rem] bg-white p-4 shadow-sm ring-1 ring-slate-200/80">
+                                        <div className="flex items-center gap-3 text-slate-900">
+                                            <Lock size={18} />
+                                            <span className="text-sm font-semibold">Premium fields</span>
+                                        </div>
+                                        <p className="mt-3 text-sm leading-6 text-slate-600">
+                                            See wholesale price, registration evidence and availability signals in one place.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex items-center justify-between rounded-[1rem] bg-slate-900 px-4 py-4 text-white">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">Status</p>
+                                        <p className="mt-2 text-lg font-semibold">Premium dashboard ready</p>
+                                    </div>
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                                        {successMessage ? <Check size={18} /> : <ArrowRight size={18} />}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p className="mt-5 text-base leading-8 text-slate-700">
+                                For full examples and deeper commercial validation, the paid beta gives early access to the richer product intelligence view.
                             </p>
                         </div>
-                        <div className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200">
-                            + VAT
-                        </div>
-                    </div>
 
-                    <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-400/12 px-3 py-2 text-xs font-semibold text-emerald-200">
-                        <Check size={14} />
-                        Be first to access the paid release
-                    </div>
+                        {successMessage ? (
+                            <div className="mt-5 rounded-[1.5rem] bg-emerald-50 px-5 py-4 text-sm font-medium leading-7 text-emerald-700 ring-1 ring-emerald-200">
+                                {successMessage}
+                            </div>
+                        ) : errorMessage ? (
+                            <div className="mt-5 rounded-[1.5rem] bg-rose-50 px-5 py-4 text-sm font-medium leading-7 text-rose-700 ring-1 ring-rose-200">
+                                {errorMessage}
+                            </div>
+                        ) : (
+                            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-amber-700 ring-1 ring-amber-200">
+                                <Sparkles size={14} />
+                                Early beta access
+                            </div>
+                        )}
+                    </section>
                 </div>
-
-                <div className="grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
-                            <PackageSearch size={18} />
-                        </div>
-                        <p className="mt-4 text-sm font-semibold text-slate-900">Availability checks</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">See where products are present, missing, or moving in the market.</p>
-                    </div>
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
-                            <Sparkles size={18} />
-                        </div>
-                        <p className="mt-4 text-sm font-semibold text-slate-900">Wholesale pricing</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">Benchmark margin structure with retail and wholesale context side by side.</p>
-                    </div>
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                            <FileCheck2 size={18} />
-                        </div>
-                        <p className="mt-4 text-sm font-semibold text-slate-900">Verified registration</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">Know when we have document-backed registration evidence from the ground.</p>
-                    </div>
-                </div>
-
-                <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-600 text-center">
-                    <p>This helps us keep field collection active and ship the paid version sooner.</p>
-                </div>
-
-                {successMessage ? (
-                    <div className="rounded-3xl bg-emerald-50 px-4 py-4 text-center text-sm font-medium text-emerald-700">
-                        {successMessage}
-                    </div>
-                ) : (
-                    <button
-                        type="button"
-                        onClick={onUpgrade}
-                        disabled={loading}
-                        className="flex w-full items-center justify-between rounded-2xl bg-[#635bff] px-4 py-3.5 text-left text-white shadow-[0_18px_40px_rgba(99,91,255,0.32)] transition hover:bg-[#564ee8] disabled:cursor-not-allowed disabled:opacity-70"
-                    >
-                        <span className="flex items-center gap-3">
-                            <span className="text-base font-semibold">Pay</span>
-                            <span className="rounded-full bg-white/14 px-2 py-0.5 text-xs font-medium text-white/88">Powered by Stripe</span>
-                        </span>
-                        <span className="text-sm font-medium">{loading ? 'Sending…' : '₵49/month'}</span>
-                    </button>
-                )}
             </div>
         </Modal>
     )
