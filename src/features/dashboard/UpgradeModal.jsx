@@ -11,7 +11,7 @@ export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage
                             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-200">Premium Plan</p>
                             <h2 className="mt-3 text-5xl font-bold">€49<span className="text-2xl text-slate-300">/mo</span></h2>
                             <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">
-                                Unlock the commercial fields that matter when you are actively evaluating the Ghana market.
+                                Access the real market data you need to succeed in Ghana, with new features and data added regularly. Cancel anytime.
                             </p>
                         </div>
                         <div className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200">
@@ -19,10 +19,10 @@ export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage
                         </div>
                     </div>
 
-                    <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-400/12 px-3 py-2 text-xs font-semibold text-emerald-200">
+                    {/* <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-400/12 px-3 py-2 text-xs font-semibold text-emerald-200">
                         <Check size={14} />
                         Be first to access the paid release
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -51,9 +51,9 @@ export function UpgradeModal({ open, onClose, onUpgrade, loading, successMessage
                     </div>
                 </div>
 
-                <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-600 text-center">
+                {/* <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-600 text-center">
                     <p>This helps us keep field collection active and ship the paid version sooner.</p>
-                </div>
+                </div> */}
 
                 {successMessage ? (
                     <div className="rounded-3xl bg-emerald-50 px-4 py-4 text-center text-sm font-medium text-emerald-700">

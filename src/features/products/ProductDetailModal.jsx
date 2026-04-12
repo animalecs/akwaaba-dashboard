@@ -89,7 +89,7 @@ export function ProductDetailModal({ product, open, onClose, premiumAccess, onUp
                     >
                         <div className="flex items-center gap-2 text-slate-500">
                             <DollarSign size={16} />
-                            <span className="text-xs font-semibold uppercase tracking-[0.18em]">Wholesale</span>
+                            <span className="text-xs font-semibold uppercase tracking-[0.18em]">Wholesale Price</span>
                         </div>
                         <div className="mt-3 text-lg font-semibold text-slate-900">
                             {premiumAccess ? formatMoney(product.wholesalePrice) : <LockBadge label="Premium only" />}
