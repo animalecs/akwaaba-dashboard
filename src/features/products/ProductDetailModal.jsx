@@ -2,15 +2,9 @@ import { Badge } from '../../components/Badge'
 import { LockBadge } from '../../components/LockBadge'
 import { Modal } from '../../components/Modal'
 import { ArrowUpRight, DollarSign, ImageIcon, Package, ShieldCheck } from 'lucide-react'
+import { formatGhsAmount } from '../../hooks/useCurrency'
 
-function formatMoney(value) {
-    return `₵${new Intl.NumberFormat('en-GH', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value ?? 0)}`
-}
-
-export function ProductDetailModal({ product, open, onClose, premiumAccess, onUpgrade }) {
+export function ProductDetailModal({ product, open, onClose, premiumAccess, onUpgrade, currency = 'GHS', rates }) {
     if (!product) return null
 
     const lastUpdate = new Date(product.lastUpdate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -39,7 +33,7 @@ export function ProductDetailModal({ product, open, onClose, premiumAccess, onUp
                             <DollarSign size={16} />
                             <span className="text-xs font-semibold uppercase tracking-[0.18em]">Retail price</span>
                         </div>
-                        <p className="mt-3 text-2xl font-semibold text-slate-900">{formatMoney(product.retailPrice)}</p>
+                        <p className="mt-3 text-2xl font-semibold text-slate-900">{formatGhsAmount(product.retailPrice, currency, rates)}</p>
                         <div className="mt-4 flex flex-wrap gap-2">
                             <Badge variant="muted">{product.category}</Badge>
                             <Badge variant="muted">{product.countryEmoji}</Badge>
@@ -92,7 +86,7 @@ export function ProductDetailModal({ product, open, onClose, premiumAccess, onUp
                             <span className="text-xs font-semibold uppercase tracking-[0.18em]">Wholesale Price</span>
                         </div>
                         <div className="mt-3 text-lg font-semibold text-slate-900">
-                            {premiumAccess ? formatMoney(product.wholesalePrice) : <LockBadge label="Premium only" />}
+                            {premiumAccess ? formatGhsAmount(product.wholesalePrice, currency, rates) : <LockBadge label="Premium only" />}
                         </div>
                     </button>
                     <button

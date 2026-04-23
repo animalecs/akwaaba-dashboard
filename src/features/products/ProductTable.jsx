@@ -3,13 +3,7 @@ import DataTable from 'react-data-table-component'
 import { AlertTriangle, CircleHelp, Filter, Search, ShieldCheck, TrendingUp } from 'lucide-react'
 import { Button } from '../../components/Button'
 import { LockBadge } from '../../components/LockBadge'
-
-function formatMoney(value) {
-    return `₵${new Intl.NumberFormat('en-GH', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value ?? 0)}`
-}
+import { formatGhsAmount } from '../../hooks/useCurrency'
 
 function formatPercent(value) {
     return `${Math.round(value)}%`
@@ -174,7 +168,7 @@ const tableStyles = {
     },
 }
 
-export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
+export function ProductTable({ products, premiumAccess, onSelect, onUpgrade, currency = 'GHS', rates }) {
     const [search, setSearch] = useState('')
     const [categoryFilter, setCategoryFilter] = useState('')
     const [brandFilter, setBrandFilter] = useState('')
@@ -258,7 +252,7 @@ export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
                 sortFunction: (a, b) => a.retailPrice - b.retailPrice,
                 cell: (product) => (
                     <div className="space-y-1">
-                        <div className="text-sm font-semibold text-slate-900">{formatMoney(product.retailPrice)}</div>
+                        <div className="text-sm font-semibold text-slate-900">{formatGhsAmount(product.retailPrice, currency, rates)}</div>
                     </div>
                 ),
             },
@@ -309,7 +303,7 @@ export function ProductTable({ products, premiumAccess, onSelect, onUpgrade }) {
             baseColumns[2],
             baseColumns[3],
         ]
-    }, [isMobile, onSelect])
+    }, [currency, isMobile, onSelect, rates])
 
     return (
         <div className="space-y-6">

@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { useEntitlement } from '../../hooks/useEntitlement'
 import { useProducts } from '../../hooks/useProducts'
 import { usePremiumUpgrade } from '../../hooks/useBilling'
+import { CURRENCY_OPTIONS, useCurrency } from '../../hooks/useCurrency'
 import { ProductTable } from '../products/ProductTable'
 import { ProductDetailModal } from '../products/ProductDetailModal'
 import { UpgradeModal } from './UpgradeModal'
@@ -16,6 +17,7 @@ export function DashboardPage() {
     const { data: entitlement, isLoading: entitlementLoading } = useEntitlement()
     const { data: products = [], isLoading: productsLoading, refetch } = useProducts()
     const premiumUpgrade = usePremiumUpgrade()
+    const { currency, setCurrency, rates, ratesUpdatedAt, ratesLoading, ratesError } = useCurrency()
     const [selected, setSelected] = useState(null)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [showUserMenu, setShowUserMenu] = useState(false)
@@ -47,7 +49,22 @@ export function DashboardPage() {
                             <h1 className="text-xl font-semibold text-slate-900 sm:text-2xl">Akwaaba</h1>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center justify-end gap-3">
+                        <label className="flex items-center gap-2 rounded-3xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                            <span className="font-medium text-slate-600">Currency</span>
+                            <select
+                                className="bg-transparent text-sm font-semibold text-slate-900 outline-none"
+                                value={currency}
+                                onChange={(event) => setCurrency(event.target.value)}
+                                title={ratesUpdatedAt ? `Rates updated ${ratesUpdatedAt}` : undefined}
+                            >
+                                {CURRENCY_OPTIONS.map((option) => (
+                                    <option key={option.code} value={option.code}>{option.label}</option>
+                                ))}
+                            </select>
+                            {ratesLoading ? <span className="text-xs text-slate-500">Updating</span> : null}
+                            {ratesError ? <span className="text-xs text-rose-600">Rates unavailable</span> : null}
+                        </label>
                         <Button variant="premium" onClick={() => setShowUpgradeModal(true)}>
                             Upgrade to premium
                         </Button>
@@ -93,6 +110,8 @@ export function DashboardPage() {
                             onSelect={(product) => setSelected(product)}
                             onUpgrade={openUpgradeModal}
                             onRefresh={refetch}
+                            currency={currency}
+                            rates={rates}
                         />
                     )}
                 </div>
@@ -104,6 +123,8 @@ export function DashboardPage() {
                 onClose={() => setSelected(null)}
                 premiumAccess={premiumAccess}
                 onUpgrade={openUpgradeModal}
+                currency={currency}
+                rates={rates}
             />
 
             <UpgradeModal
